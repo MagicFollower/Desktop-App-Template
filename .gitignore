@@ -63,4 +63,4 @@ test-results/
 *.tsbuildinfo
 
 # obsidian
-doc/.obsidian/
+/doc/.obsidian/
