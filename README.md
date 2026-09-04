@@ -2,6 +2,29 @@
 
 基于 **Electron + React + TypeScript** 的 Windows 桌面应用开发模板，复刻 RedisInsight 风格的深色主题 UI。
 
+## npm、node版本与npm仓库
+
+```bash
+X@PC-20250921QCOE MINGW64 /e/github/Desktop-App-Template (main)
+$ nrm ls
+  npm ---------- https://registry.npmjs.org/
+  yarn --------- https://registry.yarnpkg.com/
+  tencent ------ https://mirrors.tencent.com/npm/
+  cnpm --------- https://r.cnpmjs.org/
+* taobao ------- https://registry.npmmirror.com/
+  npmMirror ---- https://skimdb.npmjs.com/registry/
+  huawei ------- https://repo.huaweicloud.com/repository/npm/
+
+X@PC-20250921QCOE MINGW64 /e/github/Desktop-App-Template (main)
+$ npm -v
+11.11.0
+
+X@PC-20250921QCOE MINGW64 /e/github/Desktop-App-Template (main)
+$ node -v
+v24.14.0
+
+```
+
 ## 技术栈
 
 - **Electron** - 桌面应用框架
