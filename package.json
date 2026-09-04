@@ -1,0 +1,50 @@
+{
+  "name": "desktop-app-template",
+  "version": "1.0.0",
+  "description": "Dark-themed Windows desktop app template (Electron + React + TypeScript)",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build --config vite.renderer.config.ts",
+    "start": "electron .",
+    "package": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.template.desktop-app",
+    "productName": "Desktop App",
+    "directories": {
+      "output": "dist/electron"
+    },
+    "files": [
+      "dist/main/**/*",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.5.12",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.0.12",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "@vitejs/plugin-react": "^4.3.4"
+  }
+}
