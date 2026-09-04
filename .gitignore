@@ -61,3 +61,6 @@ test-results/
 
 # Misc
 *.tsbuildinfo
+
+# obsidian
+doc/.obsidian/
