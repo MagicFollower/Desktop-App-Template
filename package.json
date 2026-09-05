@@ -4,7 +4,7 @@
   "description": "Dark-themed Windows desktop app template (Electron + React + TypeScript)",
   "main": "dist/main/main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.renderer.config.ts",
     "build": "npm run build:main && npm run build:renderer",
     "build:main": "tsc -p tsconfig.main.json",
     "build:renderer": "vite build --config vite.renderer.config.ts",
