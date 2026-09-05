@@ -254,7 +254,7 @@ Step 3: 在 CSS 中遵循项目规范
 - [package.json 解析](文件解析-02-packagejson.md)
 - [tsconfig.json 解析](文件解析-04-tsconfig.json.md)
 - [tsconfig.main.json 解析](文件解析-05-tsconfig.main.json.md)
-- [vite.renderer.config.ts 解析](文件解析-06-vite.config.md)
+- [vite.renderer.config.ts 解析](文件解析-06-vite.renderer.config.md)
 
 > **新人小结：README 中的配置说明为什么这么简略？**
 >

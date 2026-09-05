@@ -224,7 +224,7 @@ console.log(config.version);  // TypeScript 知道 config 有 version 属性
 
 ### 3.9 `isolatedModules`: `true`
 
-**含义**：每个文件独立编译，不依赖其他文件的信息。
+**含义**：[每个文件独立编译，不依赖其他文件的信息](Desktop-App-Template/doc/文件解析-04.01-tsconfig.main.json（isolatedModules）)。
 
 **为什么需要**：Vite 使用 **esbuild**（Rust 编写的极速编译器）来做实际的代码转换。esbuild 是逐文件编译的，不知道其他文件的信息。如果 TypeScript 配置允许跨文件分析（如类型推断），esbuild 编译出来的代码可能和 TypeScript 类型检查的结果不一致。
 
