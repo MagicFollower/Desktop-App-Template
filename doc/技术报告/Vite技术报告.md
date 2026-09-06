@@ -1565,5 +1565,5 @@ Vite 的出现，标志着前端构建工具从"功能优先"走向"体验优先
 
 > **延伸阅读**（项目内文档）：
 > - [文件解析-06-vite.config.md](文件解析-06-vite.renderer.config.md)：本项目中 Vite 配置文件的具体解析
-> - [文件解析-02-packagejson.md](../文件解析-02-packagejson.md)：`npm run dev`/`build` 命令如何调用 Vite
-> - [前端入职指南.md](../前端入职指南.md)：第三章关于构建流程的新手讲解
+> - [文件解析-02-packagejson.md](文件解析-02-packagejson.md)：`npm run dev`/`build` 命令如何调用 Vite
+> - [前端入职指南.md](前端入职指南.md)：第三章关于构建流程的新手讲解
