@@ -1,0 +1,22 @@
+/* ==================== 应用外壳 ==================== */
+
+/* 根级纵向容器：标题栏固定在顶部，其余内容占满剩余空间。
+   标题栏挂在这一层（而非路由布局内），路由切换时不会重新挂载 */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  /* #root 已是 100vh 纵向 flex 容器，这里只需填满它，避免重复声明 100vh */
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-shell-body {
+  /* 自身必须是纵向 flex 容器：路由内容的 .app-layout 用 flex:1 撑高、
+     .login-page 用 height:100%，都需要父级给出确定高度，否则会塌陷 */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

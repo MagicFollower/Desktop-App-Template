@@ -1,0 +1,220 @@
+/* ==================== 通用树形下拉选择器 TreeSelect ==================== */
+
+.ui-tree-select {
+  position: relative;
+  width: 100%;
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+
+.ui-tree-select-selector {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 28px 4px 8px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: border-color var(--transition-fast);
+}
+
+.ui-tree-select-selector:hover,
+.ui-tree-select.open .ui-tree-select-selector {
+  border-color: var(--color-accent);
+}
+
+.ui-tree-select.disabled .ui-tree-select-selector {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background: var(--color-bg-secondary);
+}
+
+.ui-tree-select-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-tree-select-placeholder {
+  color: var(--color-text-muted);
+}
+
+.ui-tree-select-single {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-tree-select-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 1px 6px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.ui-tree-select-tag-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-tree-select-tag-close {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.ui-tree-select-tag-close:hover {
+  color: var(--color-danger);
+}
+
+.ui-tree-select-tag-more {
+  background: transparent;
+  border-style: dashed;
+  color: var(--color-text-secondary);
+}
+
+.ui-tree-select-arrow,
+.ui-tree-select-clear {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.ui-tree-select.open .ui-tree-select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.ui-tree-select-clear:hover {
+  color: var(--color-text-secondary);
+}
+
+/* 下拉面板 */
+.ui-tree-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.ui-tree-select-search {
+  padding: 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ui-tree-select-search-input {
+  width: 100%;
+  padding: 5px 8px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  outline: none;
+}
+
+.ui-tree-select-search-input:focus {
+  border-color: var(--color-accent);
+}
+
+.ui-tree-select-body {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.ui-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.ui-tree-row:hover {
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.ui-tree-row.selected {
+  color: var(--color-accent);
+  background: rgba(74, 158, 255, 0.12);
+}
+
+.ui-tree-row.disabled {
+  cursor: not-allowed;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.ui-tree-toggle {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.ui-tree-toggle.placeholder {
+  cursor: default;
+}
+
+.ui-tree-checkbox {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-primary);
+  font-size: 9px;
+  color: #fff;
+}
+
+.ui-tree-checkbox.checked {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.ui-tree-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-tree-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}

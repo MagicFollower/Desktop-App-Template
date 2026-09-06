@@ -1,0 +1,74 @@
+/* ==================== 自定义标题栏 ==================== */
+
+.title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  /* flex 容器中的固定行，必须禁止被压缩，否则窗口变矮时标题栏会被挤没 */
+  flex-shrink: 0;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  user-select: none;
+  /* 原生拖拽区域：由 Chromium 合成器处理，不需要 JS mousemove */
+  -webkit-app-region: drag;
+}
+
+.title-bar-drag-region {
+  flex: 1;
+  min-width: 0;
+  padding-left: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-controls {
+  display: flex;
+  flex-shrink: 0;
+  /* 按钮必须退出拖拽区域，否则点击会被当作拖拽而失效 */
+  -webkit-app-region: no-drag;
+}
+
+.window-control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 31px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: default;
+  /* 与系统原生标题栏一致：悬停即时反馈，不加过渡动画 */
+}
+
+.window-control-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--color-text-primary);
+}
+
+.window-control-btn:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Windows 规范：关闭按钮悬停为红底白字 */
+.window-control-btn.close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+.window-control-btn.close:active {
+  background: #c50f1f;
+  color: #fff;
+}
+
+/* 键盘聚焦时给出可见焦点环（无障碍） */
+.window-control-btn:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: -1px;
+}

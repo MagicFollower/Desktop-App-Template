@@ -1,0 +1,24 @@
+/* 单据号规则页：等宽字体展示单据号样式（编码的可读性优先于装饰） */
+
+.doc-preview-cell {
+  font-family: Consolas, 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+}
+
+.doc-preview-box {
+  margin: 12px 0 4px;
+  padding: 10px 12px;
+  border: 1px dashed #4a4a5a;
+  border-radius: 6px;
+  font-family: Consolas, 'JetBrains Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.doc-preview-label {
+  font-family: inherit;
+  font-size: 12px;
+  opacity: 0.55;
+  margin-bottom: 4px;
+  letter-spacing: 0;
+}

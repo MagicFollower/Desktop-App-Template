@@ -1,0 +1,87 @@
+/* ==================== 查询页通用布局 ==================== */
+
+/* 根：撑满可用高度（.app-content 已给出确定高度），纵向三段式 */
+.query-table-layout {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* 工具栏：位于查询面板与数据列表之间，内容左对齐（承载「新增」等主操作） */
+.qt-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* 上承 gap 与查询面板拉开距离，下贴数据卡片，形成「操作条 + 表格」的视觉归属 */
+  margin-bottom: 4px;
+}
+
+/* 查询面板：固定高度，不参与滚动；抵消 QueryForm 自带下边距，统一由 gap 控制间距 */
+.qt-query {
+  flex-shrink: 0;
+}
+
+.qt-query .query-form {
+  margin-bottom: 0;
+}
+
+/* 数据区卡片：占据剩余高度，内部分「滚动网格 + 固定底部分页」 */
+.qt-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* 素面模式：主体自带卡片样式（如树形表格）时，去掉外层数据区卡片装饰 */
+.qt-body.qt-plain {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* 网格主体：内部滚动，表头吸顶 */
+.qt-grid {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.qt-grid .data-table {
+  border: none;
+  border-radius: 0;
+}
+
+.qt-grid .data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* 分页器：紧贴网格下方的固定底部，数据少时也保持在区域底部 */
+.qt-pagination {
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+  padding: 8px 16px;
+  background: var(--color-bg-secondary);
+}
+
+/* 加载占位 */
+.qt-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 160px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}

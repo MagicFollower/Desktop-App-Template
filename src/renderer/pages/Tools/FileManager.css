@@ -1,0 +1,225 @@
+/* ---------- 目录侧栏（逻辑目录树，不落盘） ---------- */
+
+/* 页面骨架：左侧目录树 + 右侧查询表格（同高滚动） */
+.file-page {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+/* 右侧查询区占满剩余宽度：flex 子项默认宽随内容（flex: 0 1 auto），
+   删除数据后表格内容变窄会连带整个区域收缩 */
+.file-page .query-table-layout {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-dir-panel {
+  width: 240px;
+  flex-shrink: 0;
+  margin-right: 12px;
+  padding: 12px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow-y: auto;
+}
+
+.file-dir-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.file-dir-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+}
+
+.file-dir-row:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.file-dir-row.active {
+  background: var(--color-bg-tertiary);
+}
+
+/* 目录选中按钮：占满剩余宽度，文字左对齐（paddingLeft 由行内按深度缩进） */
+.file-dir-select {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.file-dir-row.active .file-dir-select {
+  color: var(--color-accent);
+}
+
+.file-dir-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 悬停才出现行内操作（选中/悬停时保持可见，避免拥挤） */
+.file-dir-actions {
+  display: none;
+  flex-shrink: 0;
+}
+
+.file-dir-row:hover .file-dir-actions {
+  display: inline-flex;
+}
+
+.file-dir-empty {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* 表格目录列的「未分组」弱化展示 */
+.file-dir-none {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.file-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-storage-hint {
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.file-upload-error {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(231, 76, 60, 0.12);
+  color: var(--color-danger);
+  font-size: 13px;
+}
+
+/* 下载成功/部分成功提示（与 upload-error 同布局，绿色系） */
+.file-download-msg {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(46, 164, 79, 0.12);
+  color: #2ea44f;
+  font-size: 13px;
+}
+
+/* 路径列：等宽小字 + 超长省略（悬停 title 看全量） */
+.file-path-col {
+  width: 180px;
+}
+
+.file-path-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 多选列窄化，避免与文件名列争宽 */
+.file-check-col {
+  width: 40px;
+  text-align: center;
+}
+
+.file-name-cell {
+  max-width: 340px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 存储位置徽标 */
+.storage-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.storage-badge.local {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+}
+
+.storage-badge.ftp {
+  background: rgba(155, 89, 182, 0.15);
+  color: #9b59b6;
+}
+
+.row-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.row-delete-btn:hover {
+  background: rgba(231, 76, 60, 0.12);
+}
+
+/* 行内下载按钮：与删除按钮同规格，中性色（主操作是查看，下载是取回） */
+.row-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 6px;
+  padding: 3px 10px;
+  border: 1px solid rgba(52, 152, 219, 0.4);
+  border-radius: 6px;
+  background: transparent;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.row-download-btn:hover {
+  background: rgba(52, 152, 219, 0.12);
+}
+
+.row-download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}

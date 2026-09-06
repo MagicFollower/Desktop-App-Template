@@ -1,0 +1,50 @@
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.status-badge.active {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--color-success);
+}
+
+.status-badge.disabled {
+  background: rgba(136, 136, 136, 0.15);
+  color: var(--color-text-muted);
+}
+
+.table-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 32px 0 !important;
+}
+
+/* 用户编码：等宽字体展示，与单据号规则页的格式预览同风格 */
+.user-code-cell {
+  font-family: var(--font-mono, 'Consolas', 'Courier New', monospace);
+}
+
+/* 只读输入（用户编码）：降低透明度示意不可编辑 */
+.readonly-input {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* 角色下拉项：主行展示名称，副行展示附加属性（体现多属性选项） */
+.role-option {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.role-option-name {
+  font-size: 13px;
+  color: inherit;
+}
+
+.role-option-desc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}

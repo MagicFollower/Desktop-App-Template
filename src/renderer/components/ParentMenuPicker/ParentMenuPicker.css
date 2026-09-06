@@ -1,0 +1,71 @@
+.parent-menu-picker {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  background: var(--color-bg-primary);
+}
+
+.parent-tree-item {
+  margin-bottom: 2px;
+}
+
+.parent-tree-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 13px;
+}
+
+.parent-tree-node:hover {
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.parent-tree-node.selected {
+  background: rgba(74, 158, 255, 0.15);
+  color: var(--color-accent);
+}
+
+.parent-tree-node.current {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.parent-tree-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.parent-tree-placeholder {
+  width: 16px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.parent-tree-label {
+  flex: 1;
+  color: var(--color-text-primary);
+}
+
+.parent-tree-current-tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-xs);
+  color: var(--color-text-muted);
+}
+
+.parent-tree-children {
+  margin-top: 2px;
+}

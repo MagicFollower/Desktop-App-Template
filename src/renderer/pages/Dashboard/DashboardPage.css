@@ -1,0 +1,64 @@
+.dashboard-page {
+  padding: 24px;
+}
+
+.dashboard-welcome {
+  margin-bottom: 24px;
+}
+
+.dashboard-welcome h1 {
+  font-size: 24px;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.dashboard-welcome p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.charts-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.chart-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.chart-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.chart-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chart-card-header h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.chart-unit {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: var(--color-bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.chart-card-body {
+  padding: 8px;
+}

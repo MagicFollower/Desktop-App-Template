@@ -1,0 +1,115 @@
+/* ==================== 分页器 ==================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 4px 4px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.pagination-total {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* 每页条数选择器 */
+.pagination-size-changer {
+  padding: 5px 8px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.pagination-size-changer:hover,
+.pagination-size-changer:focus {
+  border-color: var(--color-accent);
+}
+
+/* 页码按钮区 */
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.pagination-item {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.pagination-item:hover:not(:disabled):not(.active) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.pagination-item.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+  cursor: default;
+}
+
+.pagination-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-item.nav {
+  color: var(--color-text-secondary);
+}
+
+.pagination-ellipsis {
+  min-width: 22px;
+  text-align: center;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+  cursor: default;
+}
+
+/* 快速跳转 */
+.pagination-jumper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pagination-jump-input {
+  width: 48px;
+  height: 30px;
+  padding: 0 8px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  outline: none;
+  text-align: center;
+  transition: border-color var(--transition-fast);
+}
+
+.pagination-jump-input:focus {
+  border-color: var(--color-accent);
+}

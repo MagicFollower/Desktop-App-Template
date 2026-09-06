@@ -1,0 +1,279 @@
+/* Page layout styles */
+.page-container {
+  padding: 24px;
+}
+
+/* 占位页（功能开发中）：在 QueryTableLayout 数据区内垂直居中，与列表页留白节奏一致 */
+.page-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 160px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Button styles（全局工具栏按钮：primary 实心主操作 / danger 实心危险操作 / secondary 描边次要操作，三者同规格） */
+.btn-primary {
+  padding: 8px 16px;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn-danger {
+  padding: 8px 16px;
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-danger:hover {
+  background: #ff3b30;
+}
+
+/* 次要操作：描边按钮（从 Modal.css 提升为全局，尺寸与 primary 对齐） */
+.btn-secondary {
+  padding: 8px 16px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent);
+}
+
+/* 三个全局按钮类共用的禁用态（未勾选时的批量删除/下载等） */
+.btn-primary:disabled,
+.btn-danger:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+  transition: color var(--transition-fast);
+}
+
+.btn-link:hover {
+  color: var(--color-accent-hover);
+}
+
+.btn-link.danger {
+  color: var(--color-danger);
+}
+
+.btn-link.danger:hover {
+  color: #ff3b30;
+}
+
+/* Table styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.data-table thead {
+  background: var(--color-bg-tertiary);
+}
+
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-border);
+}
+
+/* Role badge */
+.role-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.role-badge.admin {
+  background: rgba(74, 158, 255, 0.15);
+  color: var(--color-accent);
+}
+
+.role-badge.user {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--color-success);
+}
+
+.role-badge.manager {
+  background: rgba(155, 89, 182, 0.15);
+  color: var(--color-purple);
+}
+
+
+/* Menu tree */
+.menu-tree {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.menu-tree-item {
+  margin-bottom: 8px;
+}
+
+.menu-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.menu-tree-row:hover {
+  background: var(--color-border);
+}
+
+.menu-tree-label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.menu-tree-path {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: monospace;
+}
+
+.menu-tree-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* Not found */
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+}
+
+.not-found h1 {
+  font-size: 48px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.not-found p {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+/* Forbidden（RequireRole 守卫的无权限提示，A3） */
+.forbidden-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  padding: 24px;
+}
+
+.forbidden-code {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.forbidden-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.forbidden-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 360px;
+  margin-bottom: 8px;
+}
+
+/* ErrorBoundary 降级 UI（A7） */
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  min-height: 240px;
+  padding: 24px;
+  text-align: center;
+}
+
+.error-boundary-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.error-boundary-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  word-break: break-all;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

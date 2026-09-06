@@ -1,0 +1,296 @@
+.menu-table {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.menu-table-row {
+  display: grid;
+  grid-template-columns: 28px 32px minmax(100px, 1fr) 180px 70px 200px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: background var(--transition-fast);
+  cursor: grab;
+  position: relative;
+}
+
+.menu-table-row:active {
+  cursor: grabbing;
+}
+
+.menu-table-row:last-child {
+  border-bottom: none;
+}
+
+.menu-table-row:hover {
+  background: var(--color-border);
+}
+
+.menu-table-header-row {
+  background: var(--color-bg-tertiary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.menu-table-header-row:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.menu-table-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  transition: all var(--transition-fast);
+}
+
+.menu-table-toggle:hover {
+  background: rgba(74, 158, 255, 0.08);
+  color: var(--color-accent);
+}
+
+.menu-table-toggle.placeholder {
+  cursor: default;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-table-icon-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-table-icon {
+  color: var(--color-accent);
+  font-size: 15px;
+}
+
+.menu-table-path {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: monospace;
+}
+
+.menu-table-type {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.menu-table-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.menu-table-actions .btn-link[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.menu-table-actions .btn-link[disabled]:hover {
+  color: var(--color-text-muted);
+}
+
+.menu-table-empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* ==================== 拖拽排序 ==================== */
+
+.menu-table-row.dragging {
+  opacity: 0.35;
+  background: var(--color-bg-tertiary);
+  cursor: grabbing;
+}
+
+/* 同级排序：目标行轻微着色 + 插入线 */
+.menu-table-row.drop-before,
+.menu-table-row.drop-after {
+  background: rgba(74, 158, 255, 0.06);
+}
+
+.drop-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.8);
+  z-index: 5;
+  pointer-events: none;
+  animation: drop-line-in 0.15s ease-out;
+}
+
+.drop-line::before,
+.drop-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: translateY(-50%);
+}
+
+.drop-line::before {
+  left: 2px;
+}
+
+.drop-line::after {
+  right: 2px;
+}
+
+.drop-line-before {
+  top: -1px;
+}
+
+.drop-line-after {
+  bottom: -1px;
+}
+
+@keyframes drop-line-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* 成为子菜单：整行呼吸高亮 */
+.menu-table-row.drop-inside {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+  animation: drop-inside-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes drop-inside-pulse {
+  0%,
+  100% {
+    background: rgba(74, 158, 255, 0.1);
+  }
+  50% {
+    background: rgba(74, 158, 255, 0.22);
+  }
+}
+
+/* 不允许的落点 */
+.menu-table-row.drop-invalid {
+  background: rgba(255, 95, 87, 0.12);
+  box-shadow: inset 0 0 0 2px var(--color-danger);
+  cursor: no-drop;
+}
+
+/* 拖拽过程中的实时提示条（常驻，避免拖拽开始时插入节点顶动表格） */
+.menu-drag-hint {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 38px;
+  margin-bottom: 10px;
+  padding: 0 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  /* 高度必须恒定：文案在拖拽中会切换，换行会把表格顶下去 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.menu-drag-hint.dragging {
+  border-style: solid;
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.menu-drag-hint.valid {
+  border: 1px solid var(--color-accent);
+  background: rgba(74, 158, 255, 0.1);
+  color: var(--color-accent);
+}
+
+.menu-drag-hint.invalid {
+  border: 1px solid var(--color-danger);
+  background: rgba(255, 95, 87, 0.1);
+  color: var(--color-danger);
+}
+
+/* 顶级菜单投放区 */
+.menu-root-drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-top: 2px dashed var(--color-border);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.menu-root-drop-zone.active {
+  border-top-color: var(--color-accent);
+  background: rgba(74, 158, 255, 0.16);
+  color: var(--color-accent);
+}
+
+.menu-root-drop-zone.invalid {
+  border-top-color: var(--color-danger);
+  background: rgba(255, 95, 87, 0.12);
+  color: var(--color-danger);
+  cursor: no-drop;
+}
+
+/* ==================== 可见角色选择（A3） ==================== */
+
+.menu-roles-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.menu-roles-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.menu-roles-option input[type='checkbox'] {
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.menu-roles-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
