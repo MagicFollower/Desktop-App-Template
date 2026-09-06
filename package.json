@@ -1,15 +1,27 @@
 {
   "name": "desktop-app-template",
   "version": "1.0.0",
+  "author": "XX <XX@XX.com>",
   "description": "Dark-themed Windows desktop app template (Electron + React + TypeScript)",
   "main": "dist/main/main.js",
   "scripts": {
     "dev": "vite --config vite.renderer.config.ts",
+    "start": "concurrently \"npm run dev\" \"npm run electron:dev\"",
+    "electron:dev": "npm run build:main && cross-env NODE_ENV=development electron .",
     "build": "npm run build:main && npm run build:renderer",
     "build:main": "tsc -p tsconfig.main.json",
+    "build:main:prod": "tsc -p tsconfig.main.prod.json",
     "build:renderer": "vite build --config vite.renderer.config.ts",
-    "start": "electron .",
-    "package": "npm run build && electron-builder"
+    "build:prod": "npm run build:main:prod && npm run build:renderer",
+    "gen:icon": "node scripts/gen-icon-test.mjs",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild",
+    "package": "npm run build:prod && electron-builder",
+    "package:cn": "cross-env ELECTRON_BUILDER_BINARIES_MIRROR=https://registry.npmmirror.com/-/binary/electron-builder-binaries/ ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ npm run package"
   },
   "build": {
     "appId": "com.template.desktop-app",
@@ -20,31 +32,64 @@
     "files": [
       "dist/main/**/*",
       "dist/renderer/**/*",
-      "package.json"
+      "package.json",
+      "!**/*.map",
+      "!**/*.d.ts"
     ],
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/sql.js/dist/sql-wasm.wasm"
+    ],
+    "compression": "maximum",
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "assets/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
-    }
+    },
+    "npmRebuild": true
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "recharts": "^2.12.7",
-    "ws": "^8.18.0"
+    "basic-ftp": "^6.2.1",
+    "bcryptjs": "^3.0.3",
+    "electron-log": "^5.4.4",
+    "sql.js": "^1.14.2"
   },
   "devDependencies": {
+    "@ant-design/icons": "^6.3.4",
+    "@eslint/js": "^10.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@types/ws": "^8.5.12",
+    "@types/sql.js": "^1.4.11",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
     "electron": "^33.2.0",
     "electron-builder": "^25.0.12",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.9.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.3",
+    "recharts": "^2.12.7",
     "typescript": "^5.6.3",
+    "typescript-eslint": "^8.69.0",
     "vite": "^6.0.3",
-    "@vitejs/plugin-react": "^4.3.4"
+    "vitest": "^5.0.0",
+    "zustand": "^5.0.15"
   }
 }

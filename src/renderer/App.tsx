@@ -1,76 +1,57 @@
-import { useState, useEffect, useCallback } from 'react';
-import Sidebar from './components/Sidebar';
-import TabBar from './components/TabBar';
-import Dashboard from './components/Dashboard';
-import WindowControls from './components/WindowControls';
-import type { MockData } from '../main/preload';
-
-interface Tab {
-  id: string;
-  label: string;
-  icon: string;
-}
-
-const initialTabs: Tab[] = [
-  { id: 'status', label: '状态', icon: '📊' },
-];
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
+import { useThemeStore } from './stores/useThemeStore';
+import { useEffect, useState } from 'react';
+import TitleBar from './components/Layout/TitleBar';
+import './App.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('status');
-  const [tabs, setTabs] = useState<Tab[]>(initialTabs);
-  const [sidebarSelected, setSidebarSelected] = useState('json');
-  const [wsConnected, setWsConnected] = useState(true);
-  const [mockData, setMockData] = useState<MockData | null>(null);
+  const initTheme = useThemeStore((state) => state.initTheme);
+  const api = typeof window !== 'undefined' ? window.electronAPI : undefined;
+
+  // 仅在 Electron 环境下存在窗口最大化状态；浏览器 dev 模式恒为 false
+  const [maximized, setMaximized] = useState(false);
 
   useEffect(() => {
-    const api = (window as any).electronAPI;
-    if (api) {
-      api.onMockData((data: MockData) => setMockData(data));
-      return () => api.removeMockDataListener();
-    }
-  }, []);
+    initTheme();
+  }, [initTheme]);
 
-  const handleAddTab = useCallback(() => {
-    const newTab: Tab = {
-      id: `tab-${Date.now()}`,
-      label: `新标签 ${tabs.length + 1}`,
-      icon: '📄',
+  /**
+   * Electron 窗口圆角支持：
+   * 1. 标记 is-electron，让全局样式在桌面端启用透明背景 + 圆角外壳；
+   * 2. 订阅主进程的最大化状态，切换 is-maximized（最大化时去掉圆角与边框）。
+   * 这里作为该 IPC 事件的唯一订阅者，TitleBar 通过 props 复用同一状态，
+   * 避免多处注册后 removeMaximizeChangeListener 相互清除监听。
+   */
+  useEffect(() => {
+    if (!api) return;
+
+    const root = document.documentElement;
+    root.classList.add('is-electron');
+
+    // 读取初始状态，之后由主进程事件驱动更新
+    api.isMaximized().then(setMaximized).catch(() => {});
+    api.onMaximizeChange(setMaximized);
+
+    return () => {
+      root.classList.remove('is-electron');
+      root.classList.remove('is-maximized');
+      api.removeMaximizeChangeListener();
     };
-    setTabs(prev => [...prev, newTab]);
-    setActiveTab(newTab.id);
-  }, [tabs.length]);
+  }, [api]);
 
-  const handleCloseTab = useCallback((tabId: string) => {
-    if (tabs.length === 1) return;
-    const newTabs = tabs.filter(t => t.id !== tabId);
-    setTabs(newTabs);
-    if (activeTab === tabId) {
-      setActiveTab(newTabs[newTabs.length - 1].id);
-    }
-  }, [tabs, activeTab]);
+  // 同步最大化状态到根元素类名，供 CSS 控制圆角显隐
+  useEffect(() => {
+    if (!api) return;
+    document.documentElement.classList.toggle('is-maximized', maximized);
+  }, [api, maximized]);
 
   return (
-    <div className="app">
-      <WindowControls />
-      <div className="app-body">
-        <Sidebar
-          selected={sidebarSelected}
-          onSelect={setSidebarSelected}
-        />
-        <div className="main-content">
-          <TabBar
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            onAddTab={handleAddTab}
-            onCloseTab={handleCloseTab}
-          />
-          <Dashboard
-            activeTab={activeTab}
-            mockData={mockData}
-            wsConnected={wsConnected}
-          />
-        </div>
+    <div className="app-shell">
+      {/* 全局唯一实例，位于路由之外：导航时不会卸载重挂，登录页同样拥有窗口控件 */}
+      <TitleBar maximized={maximized} />
+      <div className="app-shell-body">
+        <RouterProvider router={router} />
       </div>
     </div>
   );

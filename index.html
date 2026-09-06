@@ -2,6 +2,19 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
+    <!--
+      Content-Security-Policy：消除 Electron 开发期的 "Insecure Content-Security-Policy" 安全告警。
+      该告警由「无 CSP」或「CSP 含 unsafe-eval」触发；本策略刻意不含 unsafe-eval。
+      需为 Vite 开发体验放行：
+        - script-src 'unsafe-inline'：@vitejs/plugin-react 注入的 Fast Refresh 内联前置脚本；
+        - style-src  'unsafe-inline'：React 内联 style 属性 + Vite 错误浮层；
+        - connect-src：HMR WebSocket(5173) 与浏览器模式下的 Dev API(5174)；主机名须与 sqlite.ts 的 DEV_API_BASE 一致（127.0.0.1 与 localhost 在 CSP 里是不同主机）。
+      应用为本地离线、nodeIntegration=false + contextIsolation=true，XSS 面很小。
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws://localhost:5173 http://localhost:5173 http://localhost:5174 http://127.0.0.1:5174;"
+    />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Desktop App</title>

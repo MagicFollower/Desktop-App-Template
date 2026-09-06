@@ -1,3 +1,97 @@
+/* ===== CSS Variables (Design Tokens) ===== */
+
+:root {
+  /* Dark theme (default) */
+  --color-bg-primary: #0f0f1a;
+  --color-bg-secondary: #1a1a2e;
+  --color-bg-tertiary: #252540;
+  --color-border: #2a2a3e;
+  --color-border-light: #3a3a4e;
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #c0c0c0;
+  --color-text-muted: #888888;
+  --color-accent: #4a9eff;
+  --color-accent-hover: #3a8eef;
+  --color-success: #2ecc71;
+  --color-warning: #f5a623;
+  --color-danger: #ff5f57;
+  --color-purple: #9b59b6;
+  --color-pink: #ff6b9d;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+[data-theme="light"] {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #e8e8e8;
+  --color-border: #e0e0e0;
+  --color-border-light: #d0d0d0;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-muted: #999999;
+  --color-accent: #1890ff;
+  --color-accent-hover: #096dd9;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-danger: #ff4d4f;
+  --color-purple: #722ed1;
+  --color-pink: #eb2f96;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="blue"] {
+  --color-bg-primary: #0a1929;
+  --color-bg-secondary: #132f4c;
+  --color-bg-tertiary: #1e4976;
+  --color-border: #2a5a8c;
+  --color-border-light: #3a6a9c;
+  --color-text-primary: #e3f2fd;
+  --color-text-secondary: #bbdefb;
+  --color-text-muted: #90caf9;
+  --color-accent: #2196f3;
+  --color-accent-hover: #1976d2;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-danger: #f44336;
+  --color-purple: #9c27b0;
+  --color-pink: #e91e63;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="green"] {
+  --color-bg-primary: #0d1f0d;
+  --color-bg-secondary: #1a331a;
+  --color-bg-tertiary: #264726;
+  --color-border: #335c33;
+  --color-border-light: #406b40;
+  --color-text-primary: #e8f5e9;
+  --color-text-secondary: #c8e6c9;
+  --color-text-muted: #a5d6a7;
+  --color-accent: #4caf50;
+  --color-accent-hover: #388e3c;
+  --color-success: #66bb6a;
+  --color-warning: #ffa726;
+  --color-danger: #ef5350;
+  --color-purple: #ab47bc;
+  --color-pink: #ec407a;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* ===== Global Reset & Base Styles ===== */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,9 +104,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0f0f1a;
-  color: #e0e0e0;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
   overflow: hidden;
+  transition: background var(--transition-normal), color var(--transition-normal);
 }
 
 #root {
@@ -20,6 +115,32 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* ===== Electron 透明窗口的圆角外壳 ===== */
+/* 仅在桌面端（App 检测到 electronAPI 后给 <html> 打上 is-electron 类）生效，
+   浏览器 dev 模式不受影响，避免在网页里出现无意义的圆角镂空。 */
+
+/* 让 html/body/#root 透明，圆角之外才能透出桌面而非被方角背景填满 */
+html.is-electron,
+html.is-electron body,
+html.is-electron #root {
+  background: transparent;
+}
+
+/* 外壳承担主题背景与圆角；overflow:hidden 已在 App.css 声明，
+   会把内部所有方形子元素一并裁切为圆角 */
+html.is-electron .app-shell {
+  background: var(--color-bg-primary);
+  border-radius: 10px;
+  /* 1px 描边让深色主题下圆角边缘更清晰（透明窗口无法在边界外投影） */
+  border: 1px solid var(--color-border);
+}
+
+/* 最大化时取消圆角与描边，贴合系统行为（最大化应为直角满屏） */
+html.is-electron.is-maximized .app-shell {
+  border-radius: 0;
+  border: none;
 }
 
 .app {
@@ -50,27 +171,27 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f0f1a;
+  background: var(--color-bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a3e;
-  border-radius: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a4e;
+  background: var(--color-border-light);
 }
 
 /* Selection styles */
 ::selection {
-  background: #4a9eff;
+  background: var(--color-accent);
   color: #fff;
 }
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid #4a9eff;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
