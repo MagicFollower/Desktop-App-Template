@@ -941,4 +941,4 @@ Access-Control-Max-Age: 86400   // 缓存 24 小时
 
 > **延伸阅读**（项目内文档）：
 > - [文件解析-06-vite.config.md](文件解析-06-vite.renderer.config.md)：Vite 代理配置（`server.proxy`）
-> - [前端入职指南.md](../前端入职指南.md)：第五章调试技巧（DevTools Network 面板排查跨域）
+> - [前端入职指南.md](前端入职指南.md)：第五章调试技巧（DevTools Network 面板排查跨域）

@@ -1330,6 +1330,6 @@ npm 的核心贡献可以概括为三点：
 对于我们的项目（desktop-app-template），`npm install` 是**项目启动的第一步**——它将 `../../package.json` 中声明的所有依赖（React、Electron、Vite、TypeScript 等）下载到 `node_modules`，使后续的开发、构建、打包命令能够正常执行。理解 npm 的工作原理，能帮助你在遇到依赖问题时快速定位和解决。
 
 > **延伸阅读**（项目内文档）：
-> - [前端入职指南.md](../前端入职指南.md)：关于 npm 基础命令的新手讲解
+> - [前端入职指南.md](前端入职指南.md)：关于 npm 基础命令的新手讲解
 > - [Vite技术报告.md](Vite技术报告.md)：构建工具的技术原理
-> - [文件解析-02-packagejson](文件解析-02-packagejson)：package.json文件的解析
+> - [文件解析-02-packagejson](文件解析-02-packagejson.md)：package.json文件的解析

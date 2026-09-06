@@ -1490,6 +1490,6 @@ Electron 的出现，让"用 Web 技术开发桌面应用"从设想变成了现�
 对于我们的项目（desktop-app-template），Electron 承担的是**桌面应用容器**的职责——创建窗口、管理系统交互、提供安全桥接。而 UI 渲染则交给 React（渲染进程），构建交给 Vite。理解 Electron 的架构，能帮你清晰地划分"哪些代码在主进程、哪些在渲染进程、它们如何通信"。
 
 > **延伸阅读**（项目内文档）：
-> - [前端入职指南.md](../前端入职指南.md)：第二章关于 Electron 双进程架构的新手讲解
-> - [文件解析-02-packagejson.md](../文件解析-02-packagejson.md)：`main` 字段与 electron-builder 打包配置
+> - [前端入职指南.md](前端入职指南.md)：第二章关于 Electron 双进程架构的新手讲解
+> - [文件解析-02-packagejson.md](文件解析-02-packagejson.md)：`main` 字段与 electron-builder 打包配置
 > - [Vite技术报告.md](Vite技术报告.md)：渲染进程构建工具的完整技术报告
