@@ -1,6 +1,6 @@
 # Desktop App Template — 通用桌面端应用开发模板
 
-> **文档更新日期：2026-09-06**
+> **文档更新日期：2026-09-08**
 > **定位：全功能参考底座**（保留全部演示功能作为参考实现，新项目按需裁剪）
 > 本文档由一次完整的架构师评审产生：第 7 章为分级问题清单与整改方案（归档），第 9 章为模板复用/裁剪指南。
 
@@ -10,7 +10,7 @@
 
 基于 **Electron + React + TypeScript + SQLite** 的 Windows 桌面应用通用开发模板：
 
-- **开箱即用**：登录鉴权、动态菜单、标签页系统、人员/菜单管理、通用查询页范式、本地 SQLite 持久化。
+- **开箱即用**：登录鉴权、动态菜单、标签页系统、人员/菜单管理、个人资料（头像上传裁剪与预览）、通用查询页范式、本地 SQLite 持久化。
 - **参考底座**：内置 Tools（文件/Redis/FTP）等占位页，演示"如何接入一个新业务模块"；起新项目时按第 9 章裁剪。
 - **Windows 优先**：打包目标为 NSIS x64；`transparent + frame:false` 圆角窗口方案在 Linux 上兼容性差，跨平台需另行评估（见 8.6）。
 
@@ -32,7 +32,7 @@
 ```
 ┌─────────────────────────── 渲染进程 (src/renderer) ───────────────────────────┐
 │  pages/            业务页面（Login / Dashboard / System / Tools）              │
-│  components/       通用组件（Layout、QueryForm、QueryTableLayout、Modal、…）   │
+│  components/       通用组件（Layout、QueryForm、QueryTableLayout、Modal、AvatarCropModal、…）│
 │  hooks/            useQueryTable（拉取→过滤→分页 统一范式）、useClickOutside   │
 │  stores/           zustand：useAuthStore / useMenuStore / useTabStore / theme │
 │  services/         adapter.ts（IpcAdapter/HttpAdapter 工厂）+ sqlite.ts 薄门面    │
@@ -99,10 +99,10 @@ src/
     ├── app-config.ts         #   应用展示名单点配置（D7，起新项目改这里）
     ├── stores/                 #   zustand 状态
     ├── hooks/                  #   useQueryTable（列表页范式，必留）
-    ├── components/             #   通用组件（Layout/QueryForm/Modal/Toast/…）
+    ├── components/             #   通用组件（Layout/QueryForm/Modal/Toast/AvatarCropModal/…）
     ├── pages/
     │   ├── Login/  Dashboard/  #   【必留】
-    │   ├── System/             #   人员/菜单/个人资料管理（参考实现）
+    │   ├── System/             #   人员/菜单/个人资料管理（含头像裁剪，参考实现）
     │   └── Tools/              #   【可整体删除】Redis/FTP/FileManager 占位页
     └── types/  utils/
 ```
@@ -263,8 +263,8 @@ src/
 
 1. **演示级鉴权**：token 无校验、无会话过期、无防爆破（A3 已补角色维度的菜单/路由控制，但 token 本身仍是 UI 开关）。定位是本地单机模板；接后端时替换 `loginFromDb`/`useAuthStore`。
 2. **sql.js 为默认驱动**：换取零编译、跨 Electron 版本稳定；代价见 A4。
-3. **CSP 保留 `unsafe-inline`**：Vite Fast Refresh 内联脚本所需；本地离线应用 + contextIsolation 下 XSS 面很小（详见 `doc/Electron安全加固与CSP告警.md`）。
-4. **写操作后全量 persist**：简单可靠的落盘策略（详见 `doc/SQLite集成与FAQ.md`）。
+3. **CSP 保留 `unsafe-inline`**：Vite Fast Refresh 内联脚本所需；本地离线应用 + contextIsolation 下 XSS 面很小（详见 `doc/开发报告/Electron安全加固与CSP告警.md`）。
+4. **写操作后全量 persist**：简单可靠的落盘策略（详见 `doc/开发报告/SQLite集成与FAQ.md`）。
 5. **客户端过滤与分页**：`useQueryTable` 默认全量拉取 + 前端过滤，适配本地 SQLite 的小数据量；接后端后需切换服务端分页（接口已预留 `clientPagination`）。
 6. **Windows 优先**：`transparent: true` 圆角窗口在 Linux 部分环境异常；跨平台时改为 `frame: false` + 系统原生圆角方案。
 
@@ -295,8 +295,9 @@ src/
 ### 9.3 新增一个业务模块（标准流程）
 
 > 实战案例系列（新手入门推荐依次阅读）：
-> - `doc/新手实战-单据号规则功能从零到验收.md`——从需求分析到验收的逐步实施（含每步的踩坑与经验），项目中的「单据号规则」功能即按此落地（迁移 v4，可对照源码阅读）；
-> - `doc/新手实战-文件管理功能从零到验收.md`——首个「二进制数据 + 物理副作用」功能：上传（LOCAL/FTP 可配、可选逻辑目录）、多级目录管理（只删空目录）、下载到指定目录、单删/批删、路径展示与凭据只写不读（迁移 v7，含三轮迭代记录）。
+> - `doc/开发报告/新手实战-单据号规则功能从零到验收.md`——从需求分析到验收的逐步实施（含每步的踩坑与经验），项目中的「单据号规则」功能即按此落地（迁移 v4，可对照源码阅读）；
+> - `doc/开发报告/新手实战-文件管理功能从零到验收.md`——首个「二进制数据 + 物理副作用」功能：上传（LOCAL/FTP 可配、可选逻辑目录）、多级目录管理（只删空目录）、下载到指定目录、单删/批删、路径展示与凭据只写不读（迁移 v7，含三轮迭代记录）；
+> - `doc/开发报告/头像上传裁剪与预览功能实现.md`——纯 Canvas 圆形裁剪算法（零依赖）、裁剪压缩合一、hover 气泡预览，含 clamp 约束推导与踩坑记录。
 
 1. **主进程**：`db/schema.ts` 建表（migration 化后写入 `migrations[]`）；`service.ts` 增加业务函数（写函数记得 `db.persist()`）；
 2. **IPC**：`ipc/` 下新建或追加 handler；`preload.ts` 暴露 API；`electron.d.ts` 补类型（用 DTO，见 A2）；`api-server.ts` 补路由（若需浏览器调试）；
@@ -337,7 +338,12 @@ src/
 - [React 官方文档](https://react.dev/)
 - [Vite 官方文档](https://vitejs.dev/)
 - [Zustand](https://github.com/pmndrs/zustand)
-- 项目内深度文档见 `doc/` 目录（CSP 加固、SQLite 集成 FAQ、打包体积优化、通用查询组件设计等）
+- 项目内深度文档见 `doc/` 目录：
+  - `doc/开发报告/头像上传裁剪与预览功能实现.md`——头像功能全链路（上传→校验→Canvas 圆形裁剪→压缩→保存→hover 预览→移除），含裁剪算法数学推导与 4 个 bug 修复记录
+  - `doc/开发报告/自定义标题栏性能最优方案.md`——TitleBar 提升到 App 根层级的架构决策
+  - `doc/开发报告/Zustand 技术报告.md`——状态管理深度分析
+  - `doc/开发报告/通用查询组件架构设计与实现.md`——useQueryTable + QueryTableLayout 范式详解
+  - `doc/开发报告/Electron安全加固与CSP告警.md`、`SQLite集成与FAQ.md`、`打包体积优化.md` 等
 
 ## 许可证
 
