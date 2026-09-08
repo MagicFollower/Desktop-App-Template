@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons';
 import Modal from '../../components/Modal/Modal';
+import AvatarCropModal from '../../components/AvatarCropModal/AvatarCropModal';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { saveProfile, changePassword } from '../../services/sqlite';
+import type { UserInfo } from '../../types/user';
 import './Profile.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -30,6 +32,13 @@ interface PasswordForm {
 
 const emptyPasswordForm: PasswordForm = { current: '', next: '', confirm: '' };
 
+/** 从用户信息中提取基本资料表单（编辑取消 / 非编辑态同步用） */
+const extractForm = (user: UserInfo): ProfileForm => ({
+  nickname: user.nickname ?? '',
+  email: user.email ?? '',
+  phone: user.phone ?? '',
+});
+
 function Profile() {
   const userInfo = useAuthStore((state) => state.userInfo);
   const updateUserInfo = useAuthStore((state) => state.updateUserInfo);
@@ -37,6 +46,9 @@ function Profile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [editing, setEditing] = useState(false);
+  // 头像裁剪弹窗
+  const [cropVisible, setCropVisible] = useState(false);
+  const [cropSrc, setCropSrc] = useState('');
   const [form, setForm] = useState<ProfileForm>({ nickname: '', email: '', phone: '' });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -46,11 +58,7 @@ function Profile() {
   // 非编辑态时，表单始终跟随最新的用户信息（保存、登录后自动回填）
   useEffect(() => {
     if (editing || !userInfo) return;
-    setForm({
-      nickname: userInfo.nickname ?? '',
-      email: userInfo.email ?? '',
-      phone: userInfo.phone ?? '',
-    });
+    setForm(extractForm(userInfo));
   }, [editing, userInfo]);
 
   // 登录状态失效时自动跳转到登录页
@@ -73,16 +81,15 @@ function Profile() {
     return null;
   }
 
+  /** 立即生效：先更新全局 store，再持久化到数据库 */
   const applyPatch = async (patch: { nickname?: string; email?: string; phone?: string; avatar?: string }) => {
     updateUserInfo(patch);
-    if (userInfo) {
-      await saveProfile({ username: userInfo.username, ...patch });
-    }
+    await saveProfile({ username: userInfo.username, ...patch });
   };
 
   const handleAvatarSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    // 清空 value，保证连续选择同一个文件也能触发 change
+    // 清空 value，保证连续选择同一文件也能触发 change
     e.target.value = '';
     if (!file) return;
     if (!file.type.startsWith('image/')) {
@@ -94,48 +101,22 @@ function Profile() {
       return;
     }
 
-    // 使用 Canvas 压缩图片到 200x200
-    const img = new Image();
+    // 读取为 dataURL 后打开裁剪弹窗
     const reader = new FileReader();
     reader.onload = (readEvent) => {
-      img.src = String(readEvent.target?.result || '');
+      const result = String(readEvent.target?.result || '');
+      setCropSrc(result);
+      setCropVisible(true);
     };
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const MAX_SIZE = 200;
-      let width = img.width;
-      let height = img.height;
-
-      // 计算缩放比例
-      if (width > height) {
-        if (width > MAX_SIZE) {
-          height = Math.round((height * MAX_SIZE) / width);
-          width = MAX_SIZE;
-        }
-      } else {
-        if (height > MAX_SIZE) {
-          width = Math.round((width * MAX_SIZE) / height);
-          height = MAX_SIZE;
-        }
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        setMessage({ type: 'error', text: '图片处理失败' });
-        return;
-      }
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // 转换为 JPEG（质量 0.85，进一步减小体积）
-      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      applyPatch({ avatar: compressedDataUrl });
-      setMessage({ type: 'success', text: '头像已更新（已自动压缩）' });
-    };
-    img.onerror = () => setMessage({ type: 'error', text: '图片加载失败，请重试' });
     reader.onerror = () => setMessage({ type: 'error', text: '头像读取失败，请重试' });
     reader.readAsDataURL(file);
+  };
+  
+  // 裁剪完成：保存压缩后的头像
+  const handleCropConfirm = async (croppedDataUrl: string) => {
+    setCropVisible(false);
+    await applyPatch({ avatar: croppedDataUrl });
+    setMessage({ type: 'success', text: '头像已更新（已自动压缩）' });
   };
 
   const handleRemoveAvatar = async () => {
@@ -170,11 +151,7 @@ function Profile() {
   };
 
   const handleCancel = () => {
-    setForm({
-      nickname: userInfo.nickname ?? '',
-      email: userInfo.email ?? '',
-      phone: userInfo.phone ?? '',
-    });
+    setForm(extractForm(userInfo));
     setEditing(false);
   };
 
@@ -185,7 +162,6 @@ function Profile() {
   };
 
   const handleChangePassword = async () => {
-    if (!userInfo) return;
     if (!passwordForm.current) {
       setPasswordError('请输入当前密码');
       return;
@@ -203,7 +179,7 @@ function Profile() {
       return;
     }
     try {
-      // S3：旧密码校验 + bcrypt 哈希全部在主进程完成，渲染层不再接触哈希逻辑
+      // 旧密码校验 + bcrypt 哈希全部在主进程完成，渲染层不接触哈希逻辑
       await changePassword(userInfo.username, passwordForm.current, passwordForm.next);
       setPasswordVisible(false);
       setMessage({ type: 'success', text: '密码修改成功，下次登录请使用新密码' });
@@ -220,13 +196,21 @@ function Profile() {
 
       <div className="profile-layout">
         <section className="profile-side">
-          <div className="avatar-preview">
-            {userInfo.avatar ? (
-              <img src={userInfo.avatar} alt="用户头像" />
-            ) : (
-              <span className="avatar-fallback">
-                {userInfo.username.slice(0, 1).toUpperCase()}
-              </span>
+          <div className="avatar-hover-wrapper">
+            <div className="avatar-preview">
+              {userInfo.avatar ? (
+                <img src={userInfo.avatar} alt="用户头像" />
+              ) : (
+                <span className="avatar-fallback">
+                  {userInfo.username.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </div>
+            {userInfo.avatar && (
+              <div className="avatar-bubble">
+                <div className="avatar-bubble-arrow" />
+                <img src={userInfo.avatar} alt="头像预览" />
+              </div>
             )}
           </div>
           <div className="avatar-account">
@@ -342,6 +326,14 @@ function Profile() {
           </div>
         </section>
       </div>
+
+      {/* 头像裁剪弹窗 */}
+      <AvatarCropModal
+        visible={cropVisible}
+        imageSrc={cropSrc}
+        onConfirm={handleCropConfirm}
+        onCancel={() => setCropVisible(false)}
+      />
 
       <Modal
         visible={passwordVisible}

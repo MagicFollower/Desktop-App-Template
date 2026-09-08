@@ -1,0 +1,53 @@
+/* 头像裁剪弹窗内容 */
+.avatar-crop-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-crop-canvas {
+  border-radius: var(--radius-md);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.avatar-crop-canvas:active {
+  cursor: grabbing;
+}
+
+/* 缩放控制栏 */
+.avatar-crop-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.avatar-crop-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.avatar-crop-range {
+  flex: 1;
+  height: 4px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.avatar-crop-reset {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.avatar-crop-tip {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}
+

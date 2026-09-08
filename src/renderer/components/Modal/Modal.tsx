@@ -9,14 +9,15 @@ interface ModalProps {
   onConfirm?: () => void;
   children: ReactNode;
   confirmText?: string;
+  width?: number;
 }
 
-function Modal({ visible, title, onClose, onConfirm, children, confirmText = '确 定' }: ModalProps) {
+function Modal({ visible, title, onClose, onConfirm, children, confirmText = '确 定', width }: ModalProps) {
   if (!visible) return null;
 
   return (
     <div className="modal-mask" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-container" style={width ? { width } : undefined} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{title}</h3>
           <button className="modal-close" onClick={onClose}>
