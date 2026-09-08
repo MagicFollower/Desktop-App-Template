@@ -1,0 +1,217 @@
+{
+  "main": {
+    "id": "c4db3e9b525ce183",
+    "type": "split",
+    "children": [
+      {
+        "id": "4b707d0487b2b04a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1274c678461ae4bc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "doc/新手从零理解项目/01-从零理解登录逻辑.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "01-从零理解登录逻辑"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d01122fbe9f38b1c",
+    "type": "split",
+    "children": [
+      {
+        "id": "a0c000eb33450aa8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cf45c48517e6a6c0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "4f83272cf6e70c4b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "f901ce3bb480f61a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 471.5
+  },
+  "right": {
+    "id": "da03b2cf6fc0b378",
+    "type": "split",
+    "children": [
+      {
+        "id": "325fe552b13a88e2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4b6342d2a8eeb92f",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "doc/新手从零理解项目/01-从零理解登录逻辑.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "8207c14b66aadb8c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "doc/新手从零理解项目/01-从零理解登录逻辑.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "a7e33767477e1c31",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "09138699825d71cf",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "c3eed29fbe05c09a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "doc/新手从零理解项目/01-从零理解登录逻辑.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "1274c678461ae4bc",
+  "lastOpenFiles": [
+    "doc/开发报告/头像上传裁剪与预览功能实现.md",
+    "src/renderer/components/AvatarCropModal/AvatarCropModal.css",
+    "src/renderer/components/AvatarCropModal/AvatarCropModal.tsx",
+    "src/renderer/components/AvatarCropModal",
+    "doc/新手从零理解项目/02-零基础CSS入门手册.md",
+    "doc/开发报告/npm start窗口空白问题修复.md~",
+    "doc/开发报告/通用查询组件架构设计与实现.md",
+    "doc/开发报告/自定义标题栏性能最优方案.md",
+    "doc/开发报告/新手实战-文件管理功能从零到验收.md",
+    "doc/开发报告/新手实战-单据号规则功能从零到验收.md",
+    "doc/开发报告/数据库文件位置分析与说明.md",
+    "doc/开发报告/开发体验与弹窗布局优化.md",
+    "doc/开发报告/应用图标与打包icon生成.md",
+    "doc/开发报告/Zustand 技术报告.md",
+    "doc/开发报告/SQLite集成与FAQ.md",
+    "doc/开发报告/SQLite数据库路径配置与Native Module问题.md",
+    "doc/开发报告/npm start窗口空白问题修复.md",
+    "doc/开发报告/Electron安全加固与CSP告警.md",
+    "doc/开发报告",
+    "doc/0基础相关技术概念/process.env环境变量配置分析.md",
+    "doc/0基础相关技术概念",
+    "doc/新手从零理解项目/process.env环境变量配置分析.md",
+    "doc/process.env环境变量配置分析.md"
+  ]
+}
