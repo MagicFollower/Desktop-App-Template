@@ -232,7 +232,7 @@ window.addEventListener('menu-updated', handleMenuUpdate);
 
 ### Q10: 数据库文件可以自定义路径吗？打包后存在哪里？
 
-**A**: 可以。修改 `src/main/database.ts` 中的 `DB_PATH`。**当前已按打包状态自动择路（推荐做法）**：
+**A**: 可以。修改 `../../src/main/database.ts` 中的 `DB_PATH`。**当前已按打包状态自动择路（推荐做法）**：
 ```typescript
 // 开发态→项目根目录（便于 IDE 查看）；打包后→userData（用户可写、升级保留）
 const DB_DIR = app.isPackaged ? app.getPath('userData') : app.getAppPath();
@@ -247,15 +247,15 @@ const DB_PATH = join(DB_DIR, 'app-data.db');
 
 **症状**：人员、菜单等写操作后界面立刻能查到，但重启 `npm run start` 后新数据消失，仿佛没写进数据库。
 
-**根因**：本项目实际用的是 **sql.js**（WASM 版 SQLite，见 `src/main/database.ts`），它是「全内存」数据库：`INSERT/UPDATE/DELETE` 只修改内存中的数据库镜像，**不会自动写入磁盘上的 `app-data.db`**。此前只有两处会落盘：
+**根因**：本项目实际用的是 **sql.js**（WASM 版 SQLite，见 `../../src/main/database.ts`），它是「全内存」数据库：`INSERT/UPDATE/DELETE` 只修改内存中的数据库镜像，**不会自动写入磁盘上的 `app-data.db`**。此前只有两处会落盘：
 1. 初始化 `getDatabase()` 结束（插入默认种子数据后）；
 2. Electron `before-quit → closeDatabase()`。
 
 开发环境用 `concurrently` 启动，Ctrl+C 重启会直接杀掉 Electron 子进程，`before-quit` 往往来不及触发，于是本次会话未落盘的改动全部丢失——重启后 `getDatabase()` 从旧磁盘文件重新加载，新数据自然不见了。（菜单数据因每次启动会从默认种子 `INSERT OR IGNORE`，所以看起来“只剩默认菜单”。）
 
 **修复**：把「每次写操作后整体落盘」作为强制约定：
-- `src/main/database.ts` 导出 `saveDatabase()`（内部 `db.export()` → `fs.writeFileSync(DB_PATH)`）。
-- `src/main/service.ts`（IPC 与 Dev API server 共用的唯一写入层）中**每一个写函数**——userCreate/userUpdate/userDelete、profileUpdate、passwordChange、menuUpsert、menuBatchUpdate（事务 COMMIT 后）、menuDelete——完成后立即 `saveDatabase()`。`closeDatabase()` 保留为兜底。
+- `../../src/main/database.ts` 导出 `saveDatabase()`（内部 `db.export()` → `fs.writeFileSync(DB_PATH)`）。
+- `../../src/main/service.ts`（IPC 与 Dev API server 共用的唯一写入层）中**每一个写函数**——userCreate/userUpdate/userDelete、profileUpdate、passwordChange、menuUpsert、menuBatchUpdate（事务 COMMIT 后）、menuDelete——完成后立即 `saveDatabase()`。`closeDatabase()` 保留为兜底。
 
 **要点**：sql.js 没有常驻的磁盘连接，“写完即持久化”必须自己显式导出快照；不能只依赖优雅退出。数据量大时可对 `saveDatabase()` 做防抖/批量，但正确性前提是“崩溃/强杀也不能丢”。
 
@@ -263,9 +263,9 @@ const DB_PATH = join(DB_DIR, 'app-data.db');
 
 ### Q12: sql.js 与 better-sqlite3 如何在两者之间切换？
 
-**A**: 主进程已引入驱动抽象层 `SqlDriver`（`src/main/db/`），service 层只依赖该接口，不感知具体驱动：
+**A**: 主进程已引入驱动抽象层 `SqlDriver`（`../../src/main/db`），service 层只依赖该接口，不感知具体驱动：
 
-- **`src/main/database.ts`** 作为驱动选择器，读 `process.env.DB_DRIVER` 决定实例化哪个驱动；
+- **`../../src/main/database.ts`** 作为驱动选择器，读 `process.env.DB_DRIVER` 决定实例化哪个驱动；
 - 默认（不设或设为非 `better`）走 **sql.js**，行为与之前完全一致；
 - 设 `DB_DRIVER=better` 且原生模块已正确编译（ABI 匹配）时走 **better-sqlite3**；若加载失败会打印告警并**自动回退 sql.js**，应用照常启动。
 
@@ -282,17 +282,17 @@ $env:DB_DRIVER="better"; npm run start
 
 | 文件 | 职责 |
 |------|------|
-| `src/main/database.ts` | **驱动选择器**：读 `DB_DRIVER` 选 sql.js / better-sqlite3，失败回退；对外 `getDatabase()/closeDatabase()` |
-| `src/main/db/types.ts` | `SqlDriver` 统一契约（all/get/run/exec/transaction/persist/close） |
-| `src/main/db/schema.ts` | 驱动无关的建表 + 默认数据种子 `applySchemaAndSeed()` |
-| `src/main/db/sqljs-driver.ts` | 默认驱动：WASM 初始化 + 内存导出落盘 |
-| `src/main/db/better-sqlite3-driver.ts` | 可选驱动：懒加载原生模块，实时写盘（persist 空操作） |
-| `src/main/service.ts` | IPC 与 Dev API server 共用的唯一读写层，只依赖 `SqlDriver`，每个写函数末尾 `db.persist()` |
-| `src/main/ipc/menu.ts` | 菜单 IPC 通道（list/upsert/batch-update/delete） |
-| `src/main/preload.ts` | 暴露 `window.electronAPI` 给渲染进程 |
-| `src/renderer/types/electron.d.ts` | ElectronAPI 类型声明 |
-| `src/renderer/services/sqlite.ts` | 双环境适配层（Electron IPC + localStorage 回退） |
-| `src/renderer/pages/System/MenuManagement.tsx` | 菜单管理页面（CRUD + 拖拽排序） |
+| `../../src/main/database.ts` | **驱动选择器**：读 `DB_DRIVER` 选 sql.js / better-sqlite3，失败回退；对外 `getDatabase()/closeDatabase()` |
+| `../../src/main/db/types.ts` | `SqlDriver` 统一契约（all/get/run/exec/transaction/persist/close） |
+| `../../src/main/db/schema.ts` | 驱动无关的建表 + 默认数据种子 `applySchemaAndSeed()` |
+| `../../src/main/db/sqljs-driver.ts` | 默认驱动：WASM 初始化 + 内存导出落盘 |
+| `../../src/main/db/better-sqlite3-driver.ts` | 可选驱动：懒加载原生模块，实时写盘（persist 空操作） |
+| `../../src/main/service.ts` | IPC 与 Dev API server 共用的唯一读写层，只依赖 `SqlDriver`，每个写函数末尾 `db.persist()` |
+| `../../src/main/ipc/menu.ts` | 菜单 IPC 通道（list/upsert/batch-update/delete） |
+| `../../src/main/preload.ts` | 暴露 `window.electronAPI` 给渲染进程 |
+| `../../src/renderer/types/electron.d.ts` | ElectronAPI 类型声明 |
+| `../../src/renderer/services/sqlite.ts` | 双环境适配层（Electron IPC + localStorage 回退） |
+| `../../src/renderer/pages/System/MenuManagement.tsx` | 菜单管理页面（CRUD + 拖拽排序） |
 
 ---
 

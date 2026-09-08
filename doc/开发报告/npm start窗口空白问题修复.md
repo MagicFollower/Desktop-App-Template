@@ -12,7 +12,7 @@
 
 ### 1. 环境变量缺失
 
-`package.json` 中的 `start` 脚本直接运行 `electron .`，未设置 `NODE_ENV` 环境变量：
+`../../package.json` 中的 `start` 脚本直接运行 `electron .`，未设置 `NODE_ENV` 环境变量：
 
 ```json
 "start": "electron ."  // ❌ NODE_ENV 未定义
@@ -75,7 +75,7 @@ npm install --save-dev concurrently cross-env
 
 ### 步骤 3：增强主进程错误处理
 
-在 `src/main/main.ts` 的 `createWindow()` 中添加错误捕获：
+在 `../../src/main/main.ts` 的 `createWindow()` 中添加错误捕获：
 
 ```typescript
 if (process.env.NODE_ENV === 'development') {

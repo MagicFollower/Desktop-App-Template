@@ -39,7 +39,7 @@
    npm install sql.js @types/sql.js
    ```
 
-2. **重写数据库层** (`src/main/database.ts`)
+2. **重写数据库层** (`../../src/main/database.ts`)
    - 使用 `initSqlJs()` 异步初始化 WASM
    - 指定 WASM 文件路径：`require.resolve('sql.js/dist/sql-wasm.wasm')`
    - 内存数据库 + 手动保存到文件（`db.export()` → `fs.writeFileSync`）
@@ -54,7 +54,7 @@
    - 每个 handler 内部 `await getDatabase()` 获取数据库实例
    - 事务处理改用手动 `BEGIN/COMMIT/ROLLBACK`
 
-5. **更新主进程入口** (`src/main/main.ts`)
+5. **更新主进程入口** (`../../src/main/main.ts`)
    - `app.whenReady()` 回调改为 async
    - await 数据库初始化和 IPC 注册
 
@@ -95,7 +95,7 @@
 4. 原生模块加载失败时自动回退 sql.js，绝不因可选依赖导致应用崩溃。
 
 ### 设计
-新增 `src/main/db/`，定义统一契约 `SqlDriver`：
+新增 `../../src/main/db`，定义统一契约 `SqlDriver`：
 
 | 方法 | 语义 |
 |------|------|
@@ -144,7 +144,7 @@ service 层「每个写函数末尾调用 `db.persist()`」的约定不变，因
 - 打包后 `app.getAppPath()` = `…\resources\app.asar`（**只读归档**）；且 `app-data.db` 不在 `build.files` 白名单内，asar 里根本没有该文件 → 启动时 `fs.existsSync` 为 false 走「新建」，随后 sql.js 的 `persist()` 执行 `fs.writeFileSync('…\app.asar\app-data.db')` **抛错**（仅被 catch 打日志）→ 数据永远停在内存，进程一结束即全丢。
 - 头像以 TEXT 列存于同库，故与人员数据同生共死。
 
-**修复**（`src/main/database.ts`）：按打包状态择路径，并在模块加载时确保目录存在：
+**修复**（`../../src/main/database.ts`）：按打包状态择路径，并在模块加载时确保目录存在：
 ```ts
 const DB_DIR = app.isPackaged ? app.getPath('userData') : app.getAppPath();
 fs.mkdirSync(DB_DIR, { recursive: true });

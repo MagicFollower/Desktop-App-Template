@@ -26,13 +26,13 @@ Electron 在**开发模式**下内置了一组安全检查（`securityWarnings`�
 
 ## 根因定位
 
-- `index.html` 无 CSP `<meta>`；
+- `../../index.html` 无 CSP `<meta>`；
 - `main.ts` 的 `webPreferences` 只有 `contextIsolation: true` / `nodeIntegration: false`（这两项本身是**正确且已满足**的安全基线，与本告警无关），也未通过 `session.webRequest.onHeadersReceived` 注入 CSP 响应头。
 - 结论：纯粹是「缺 CSP」，不是配置错。
 
 ## 修复
 
-在 `index.html` 的 `<head>` 中、尽量靠前处加入一条 CSP `<meta>`（**刻意不含 `unsafe-eval`**，从而消除告警）：
+在 `../../index.html` 的 `<head>` 中、尽量靠前处加入一条 CSP `<meta>`（**刻意不含 `unsafe-eval`**，从而消除告警）：
 
 ```html
 <meta
@@ -72,8 +72,8 @@ Electron 在**开发模式**下内置了一组安全检查（`securityWarnings`�
 
 本告警相关的安全加固收敛为两处改动，均随 `build:renderer` 验证进产物：
 
-1. **`index.html` 加 CSP `<meta>`**（见上文「修复」）——消除告警，且不破坏 Vite dev 的 HMR / React Fast Refresh。
-2. **`vite.renderer.config.ts` 设 `base: './'`**——让打包后的 `dist/renderer/index.html` 以**相对路径**引用资源（已验证产物为 `./assets/xxx.js`、`./vite.svg`）。这样 `file://` 下资源能正确加载，CSP 的 `default-src 'self'` 也能匹配同源资源。dev 模式不受 base 影响。
+1. **`../../index.html` 加 CSP `<meta>`**（见上文「修复」）——消除告警，且不破坏 Vite dev 的 HMR / React Fast Refresh。
+2. **`../../vite.renderer.config.ts` 设 `base: './'`**——让打包后的 `dist/renderer/index.html` 以**相对路径**引用资源（已验证产物为 `./assets/xxx.js`、`./vite.svg`）。这样 `file://` 下资源能正确加载，CSP 的 `default-src 'self'` 也能匹配同源资源。dev 模式不受 base 影响。
 
 ### 为什么 CSP 是「最终版」而不再追求 nonce
 
@@ -145,5 +145,5 @@ CSP 只约束**渲染进程文档内**发起的资源加载与 fetch / XHR / Web
 
 | 文件 | 变更 |
 |------|------|
-| `index.html` | `<head>` 新增 CSP `<meta>`（无 `unsafe-eval`，为 Vite dev 放行 inline 脚本/样式与本地 WS/HTTP） |
-| `vite.renderer.config.ts` | 设 `base: './'`，使打包产物以相对路径引用资源，`file://` 可正常加载且匹配 CSP `'self'` |
+| `../../index.html` | `<head>` 新增 CSP `<meta>`（无 `unsafe-eval`，为 Vite dev 放行 inline 脚本/样式与本地 WS/HTTP） |
+| `../../vite.renderer.config.ts` | 设 `base: './'`，使打包产物以相对路径引用资源，`file://` 可正常加载且匹配 CSP `'self'` |

@@ -12,11 +12,11 @@
 
 ## 根因
 
-`package.json` 里配置了：
+`../../package.json` 里配置了：
 ```json
 "build": { "win": { "target": "nsis", "icon": "assets/icon.ico" } }
 ```
-但项目里**根本没有 `assets/icon.ico`**（`assets/` 目录都不存在）。electron-builder 找不到指定图标，于是：
+但项目里**根本没有 `../../assets/icon.ico`**（`../../assets` 目录都不存在）。electron-builder 找不到指定图标，于是：
 1. 回退到 Electron 自带图标；
 2. 打印上面那条 warning。
 
@@ -24,13 +24,13 @@
 
 ## 约束
 
-- 期望「以 `public/vite.svg`（Vite 闪电 logo）为准，或做一个类似的」。
+- 期望「以 `../../public/vite.svg`（Vite 闪电 logo）为准，或做一个类似的」。
 - 本机**没有 SVG 光栅化工具**（无 ImageMagick/inkscape/sharp），且 **GitHub 网络受限**，不适合临时 `npx` 拉取转换包。
 - 需要产物是**合法的 Windows `.ico`**，且 electron-builder 的 win 目标期望包含 **≥256×256** 的帧。
 
 ## 方案（已采用）：纯 Node 零依赖，程序化生成 PNG-in-ICO
 
-新增可复现脚本 [`../scripts/gen-icon-test.mjs`](../scripts/gen-icon-test.mjs)，并加 npm 脚本：
+新增可复现脚本 [`../../scripts/gen-icon-test.mjs`](../../scripts/gen-icon-test.mjs)，并加 npm 脚本：
 ```json
 "gen:icon": "node scripts/gen-icon-test.mjs"
 ```
@@ -43,7 +43,7 @@
 2. **手写 PNG 编码器**：标准 `IHDR/IDAT/IEND` 分块 + 自实现 CRC32 + `zlib.deflateSync`（truecolor+alpha，filter=0）。
 3. **打包 ICO 容器**：`ICONDIR + ICONDIRENTRY[] + 各帧 PNG`，即 **PNG-in-ICO（Vista+ 格式）**，Windows 与 electron-builder 均可直接识别。256 帧的尺寸字节按规范写 `0`。
 
-输出多尺寸帧：**16 / 24 / 32 / 48 / 64 / 128 / 256**，写入 `assets/icon.ico`。
+输出多尺寸帧：**16 / 24 / 32 / 48 / 64 / 128 / 256**，写入 `../../assets/icon.ico`。
 
 ### 为什么用 PNG-in-ICO 而非 BMP-in-ICO
 PNG 帧更小、带 8 位 alpha、支持 256 大帧；Vista 起的 Windows 与 electron-builder 都吃这种格式，实现也最简（直接内嵌上面产出的 PNG，省去 BMP 掩码/反行序处理）。
@@ -64,19 +64,19 @@ npm run package           # 之后打包即采用自定义图标，默认图标�
 
 ## 验证
 
-- 生成：`node scripts/gen-icon.mjs` 成功，产物 `assets/icon.ico` 13KB、7 帧 PNG（含 256）。
-- 目标路径与 `package.json` 的 `build.win.icon = "assets/icon.ico"` 一致。
+- 生成：`node scripts/gen-icon.mjs` 成功，产物 `../../assets/icon.ico` 13KB、7 帧 PNG（含 256）。
+- 目标路径与 `../../package.json` 的 `build.win.icon = "assets/icon.ico"` 一致。
 - 补齐后，electron-builder 打包时不再走「默认 Electron 图标」分支（前提：winCodeSign/nsis 二进制可正常下载，网络问题解决后整包即可带上自定义图标）。
 
 ## 影响面 / 未改动项
 
-- 浏览器页签 **favicon** 仍是 `index.html` 里的 `<link rel="icon" href="/vite.svg">`（`public/vite.svg` 保留），与桌面 exe 图标是两回事，未改。
+- 浏览器页签 **favicon** 仍是 `../../index.html` 里的 `<link rel="icon" href="/vite.svg">`（`../../public/vite.svg` 保留），与桌面 exe 图标是两回事，未改。
 - 若后续要让 favicon 也换成同款，可用本脚本导一张 `icon.png` 替换即可。
 
 ## 相关文件
 
 | 文件 | 说明 |
 |------|------|
-| `../scripts/gen-icon-test.mjs` | 零依赖图标生成器（光栅化 + PNG 编码 + ICO 打包 + 自检） |
-| `assets/icon.ico` | 生成的多尺寸 Windows 图标（新增） |
-| `package.json` | 新增 `gen:icon` 脚本；`build.win.icon` 指向 `assets/icon.ico` |
+| `../../scripts/gen-icon-test.mjs` | 零依赖图标生成器（光栅化 + PNG 编码 + ICO 打包 + 自检） |
+| `../../assets/icon.ico` | 生成的多尺寸 Windows 图标（新增） |
+| `../../package.json` | 新增 `gen:icon` 脚本；`build.win.icon` 指向 `../../assets/icon.ico` |
